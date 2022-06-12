@@ -32,13 +32,14 @@ Make new (sub)domain:<br>
 
 <script type="text/javascript" src="web3.min.js"></script>
 <script type="text/javascript">
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8293"));
+  const DEFAULT_GAS_PRICE = 10000;
+  const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8293"));
   // web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   const accounts = web3.eth.accounts;
 
   web3.defaultAccount = accounts[0];
   const ensContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"resolver","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"label","type":"bytes32"},{"name":"owner","type":"address"}],"name":"setSubnodeOwner","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"ttl","type":"uint64"}],"name":"setTTL","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"ttl","outputs":[{"name":"","type":"uint64"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"resolver","type":"address"}],"name":"setResolver","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"owner","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"owner","type":"address"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":true,"name":"label","type":"bytes32"},{"indexed":false,"name":"owner","type":"address"}],"name":"NewOwner","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"resolver","type":"address"}],"name":"NewResolver","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"ttl","type":"uint64"}],"name":"NewTTL","type":"event"}]);
-  const ens = ensContract.at('0x331414dc3f6af20c74433db88ca76e2bfe5240f7');
+  const ens = ensContract.at('0xf8aeac2a8acd1de237e7a7acccb59e866d18a91b');
 
   let options = '';
   accounts.forEach((account) => {
@@ -81,11 +82,11 @@ Make new (sub)domain:<br>
     const node = web3.toAscii(namehash(document.getElementById('domain').value));
     const value = document.getElementById('domain-address').value;
 
-    ens.setOwner.call(node, value, {from: getAccount(), gas: 4000000}, (error) => {
+    ens.setOwner.call(node, value, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE}, (error) => {
       if (error) {
         return;
       }
-      ens.setOwner(node, value, {from: getAccount(), gas: 4000000});
+      ens.setOwner(node, value, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE});
       alert('Tx sent');
     });
   });
@@ -94,12 +95,12 @@ Make new (sub)domain:<br>
     const node = web3.toAscii(namehash(document.getElementById('domain').value));
     const value = document.getElementById('domain-address').value;
 
-    ens.setResolver.call(node, value, {from: getAccount(), gas: 4000000}, (error) => {
+    ens.setResolver.call(node, value, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE}, (error) => {
       if (error) {
         return;
       }
 
-      ens.setResolver(node, value, {from: getAccount(), gas: 4000000});
+      ens.setResolver(node, value, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE});
       alert('Tx sent');
     });
   });
@@ -109,11 +110,11 @@ Make new (sub)domain:<br>
     const labelHashed = web3.toAscii(sha3(document.getElementById('subdomain-label').value));
     const ownerAddress = document.getElementById('subdomain-owner').value;
 
-    ens.setSubnodeOwner.call(rootNode, labelHashed, ownerAddress, {from: getAccount(), gas: 4000000}, (error) => {
+    ens.setSubnodeOwner.call(rootNode, labelHashed, ownerAddress, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE}, (error) => {
       if (error) {
         return;
       }
-      ens.setSubnodeOwner(rootNode, labelHashed, ownerAddress, {from: getAccount(), gas: 4000000});
+      ens.setSubnodeOwner(rootNode, labelHashed, ownerAddress, {from: getAccount(), gas: 4000000, gasPrice: DEFAULT_GAS_PRICE});
       alert('Tx sent');
     });
 
